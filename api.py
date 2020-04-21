@@ -1,6 +1,7 @@
 import flask
 from flask import jsonify, request
-from data_db import db_session
+#  from data_db import db_session
+from data_db.db_test_session import db_session
 from data_db.users import User
 from flask_login import current_user
 from data_db.programs import Program
@@ -19,14 +20,14 @@ def add_key_program():
     elif not request.json['key_user']:
         return jsonify({'error': 'not_key_user'})
     key_user = request.json['key_user']
-    session = db_session.create_session()
-    user = session.query(User).filter(User.key_user == key_user).first()
+    #  session = db_session.create_session()
+    user = db_session.query(User).filter(User.key_user == key_user).first()
     if not user:
         return jsonify({'error': 'user_not_found'})
     if user.program_active:
         return jsonify({'error': 'key_active'})
     user.program_active = True
-    session.commit()
+    db_session.commit()
     return jsonify({'success': 'add_program'})
 
 
@@ -38,14 +39,14 @@ def exit_key_program():
     elif not request.json['key_user']:
         return jsonify({'error': 'not_key_user'})
     key_user = request.json['key_user']
-    session = db_session.create_session()
-    user = session.query(User).filter(User.key_user == key_user).first()
+    #  session = db_session.create_session()
+    user = db_session.query(User).filter(User.key_user == key_user).first()
     if not user:
         return jsonify({'error': 'user_not_found'})
     if not user.program_active:
         return jsonify({'error': 'key_not_active'})
     user.program_active = False
-    session.commit()
+    db_session.commit()
     return jsonify({'success': 'exit_program_success'})
 
 
@@ -58,15 +59,15 @@ def add_key_bot():
         return jsonify({'error': 'Not key_user'})
     key_user = request.json['key_user']
     id_user_vk = request.json['id_user_vk']
-    session = db_session.create_session()
-    user = session.query(User).filter(User.key_user == key_user).first()
+    #  session = db_session.create_session()
+    user = db_session.query(User).filter(User.key_user == key_user).first()
     if not user:
         return jsonify({'error': 'error_not_found_key'})
     if user.bot_active:
         return jsonify({'error': 'error_key_activated'})
     user.bot_active = True
     user.id_user_vk = id_user_vk
-    session.commit()
+    db_session.commit()
     return jsonify({'success': 'OK'})
 
 
@@ -78,15 +79,15 @@ def exit_key_bot():
     elif not request.json['key_user']:
         return jsonify({'error': 'Not key_user'})
     key_user = request.json['key_user']
-    session = db_session.create_session()
-    user = session.query(User).filter(User.key_user == key_user).first()
+    #  session = db_session.create_session()
+    user = db_session.query(User).filter(User.key_user == key_user).first()
     if not user:
         return jsonify({'error': 'error_not_found_key'})
     if not user.bot_active:
         return jsonify({'error': 'error_key_not_activated'})
     user.bot_active = False
     user.id_user_vk = None
-    session.commit()
+    db_session.commit()
     return jsonify({'success': 'exit_bot_success'})
 
 
@@ -97,13 +98,13 @@ def change_path_program():
         return jsonify({'error': 'Empty request'})
     elif not request.json['key_user'] or not request.json['name_program']:
         return jsonify({'error': 'Not key_user or name_program'})
-    session = db_session.create_session()
+    #  session = db_session.create_session()
     key_user = request.json['key_user']
     name_program = request.json['name_program']
     #  return jsonify({"f": name_program})
     # Program.name_program == name_program
-    user = session.query(User).filter(User.key_user == key_user).first()
-    program = session.query(Program).filter(Program.user_id == user.id, Program.name_program == name_program).first()
+    user = db_session.query(User).filter(User.key_user == key_user).first()
+    program = db_session.query(Program).filter(Program.user_id == user.id, Program.name_program == name_program).first()
     #  program = session.query(Program).filter(Program.name_program == name_program).first()
     if not user:
         return jsonify({'error': 'user_not_found'})
@@ -112,7 +113,7 @@ def change_path_program():
     if not user.bot_active:
         return jsonify({'error': 'bot not active'})
     user.path_program_select = program.path_program
-    session.commit()
+    db_session.commit()
     return jsonify({'success': 'path_program_change_success'})
 
 
@@ -123,17 +124,17 @@ def change_name_scenario():
         return jsonify({'error': 'Empty request'})
     elif not request.json['key_user'] or not request.json['name_scenario']:
         return jsonify({'error': 'Not key_user or name_scenario'})
-    session = db_session.create_session()
+    #  session = db_session.create_session()
     key_user = request.json['key_user']
     name_scenario = request.json['name_scenario']
-    user = session.query(User).filter(User.key_user == key_user).first()
+    user = db_session.query(User).filter(User.key_user == key_user).first()
     if not user:
         return jsonify({'error': 'user_not_found'})
-    scenario = session.query(Scenario).filter(Scenario.user_id == user.id, Scenario.name_scenario == name_scenario).first()
+    scenario = db_session.query(Scenario).filter(Scenario.user_id == user.id, Scenario.name_scenario == name_scenario).first()
     if not scenario:
         return jsonify({'error': 'scenario_not_found'})
     user.scenario_select = scenario.name_scenario
-    session.commit()
+    db_session.commit()
     return jsonify({'success': 'name_scenario_change_success'})
 
 # Данный метод меняет функцию (Выключить, перезагрузить или включить спящий режим на ПК)
@@ -143,16 +144,16 @@ def change_pc_function():
         return jsonify({'error': 'Empty request'})
     elif not request.json['key_user'] or not request.json['function']:
         return jsonify({'error': 'Not key_user or function'})
-    session = db_session.create_session()
+    #  session = db_session.create_session()
     key_user = request.json['key_user']
     name_function = request.json['function']
-    user = session.query(User).filter(User.key_user == key_user).first()
+    user = db_session.query(User).filter(User.key_user == key_user).first()
     if not user:
         return jsonify({'error': 'user_not_found'})
     result_check_pc_function = check_pc_function(user, name_function)
     if result_check_pc_function == 'success':
         user.select_pc_function = name_function
-        session.commit()
+        db_session.commit()
         return jsonify({'success': 'name_function_change_success'})
     else:
         return jsonify({'error': result_check_pc_function})
@@ -160,8 +161,8 @@ def change_pc_function():
 
 # Данный метод проверяет, есть ли такая функция на сервере и включена она пользователем
 def check_pc_function(user, fucnction):
-    session = db_session.create_session()
-    user_functions = session.query(Function).filter(Function.user == user).first()
+    #  session = db_session.create_session()
+    user_functions = db_session.query(Function).filter(Function.user == user).first()
     functions = {
         'shutdown': user_functions.shut_down,
         'reboot': user_functions.reboot,
@@ -182,22 +183,22 @@ def get_all_functions_client():
         return jsonify({'error': 'Empty request'})
     elif not request.json['key_user']:
         return jsonify({'error': 'not_found_key_user'})
-    session = db_session.create_session()
+    # session = db_session.create_session()
     key_user = request.json['key_user']
-    user = session.query(User).filter(User.key_user == key_user).first()
+    user = db_session.query(User).filter(User.key_user == key_user).first()
     if not user:
         return jsonify({'error': 'user_not_found'})
     # Получение информации
     path_program_select = user.path_program_select
     scenario_select = user.scenario_select
     select_pc_function = user.select_pc_function
-    scenario = session.query(Scenario).filter(Scenario.name_scenario == scenario_select, Scenario.user == user).first()
-    all_programs = session.query(Program).filter(Program.user == user).all()
+    scenario = db_session.query(Scenario).filter(Scenario.name_scenario == scenario_select, Scenario.user == user).first()
+    all_programs = db_session.query(Program).filter(Program.user == user).all()
     # Очистка информации, чтобы не было повторного запуска
     user.path_program_select = None
     user.scenario_select = None
     user.select_pc_function = None
-    session.commit()
+    db_session.commit()
     return jsonify({'path_program_select': path_program_select, 'scenario_select': get_list_programs(scenario, all_programs), 'select_pc_function': select_pc_function})
 
 
@@ -222,12 +223,12 @@ def get_start_program():
         return jsonify({'error': 'Empty request'})
     elif not request.json['key_user']:
         return jsonify({'error': 'Not key_user'})
-    session = db_session.create_session()
+    #  session = db_session.create_session()
     key_user = request.json['key_user']
-    user = session.query(User).filter(User.key_user == key_user).first()
+    user = db_session.query(User).filter(User.key_user == key_user).first()
     path_program_select = user.path_program_select
     user.path_program_select = ""
-    session.commit()
+    db_session.commit()
     return jsonify({'path_program': [path_program_select]})
 
 
@@ -239,8 +240,8 @@ def check_key_user():
     elif not request.json['id_user_vk']:
         return jsonify({'error': 'Not id_user_vk'})
     id_user_vk = request.json['id_user_vk']
-    session = db_session.create_session()
-    user = session.query(User).filter(User.id_user_vk == id_user_vk).first()
+    #  session = db_session.create_session()
+    user = db_session.query(User).filter(User.id_user_vk == id_user_vk).first()
     if not user:
         return jsonify({'error': 'not_user'})
     key_user = user.key_user
@@ -250,8 +251,8 @@ def check_key_user():
 # Данный метод возвращает программы, которые есть у пользователя на сайте
 @blueprint.route('/get_programs_for_scenarios', methods=['GET'])
 def get_programs_for_scenarios():
-    session = db_session.create_session()
-    user = session.query(User).get(current_user.id)
+    #  session = db_session.create_session()
+    user = db_session.query(User).get(current_user.id)
     if not user:
         return jsonify({'error': 'user not found'})
     programs = user.programs
@@ -272,14 +273,14 @@ def create_new_scenario():
         return jsonify({'error': 'Убедитесь, вы добавили программы и ввели название сценария'})
     programs_add_scenario = request.json['programs']
     name_scenario = request.json['name_scenario']
-    session = db_session.create_session()
+    #  session = db_session.create_session()
     programs = get_programs(programs_add_scenario)
 
     scenario = Scenario(
         name_scenario=name_scenario,
         programs=programs
     )
-    all_scenarios = session.query(Scenario).filter(Scenario.user == current_user).all()
+    all_scenarios = db_session.query(Scenario).filter(Scenario.user == current_user).all()
 
     if check_scenario(name_scenario, all_scenarios) == "error":
         return jsonify({'error': 'Сценарий с таким именем уже существует'})
@@ -288,9 +289,9 @@ def create_new_scenario():
     if check_programs(programs_add_scenario) == "error_len":
         return jsonify({'error': 'Убедитесь, что вы заполнили все поля с программами'})
 
-    user = session.query(User).get(current_user.id)
+    user = db_session.query(User).get(current_user.id)
     user.scenarios.append(scenario)
-    session.commit()
+    db_session.commit()
     return jsonify({'success': 'OK'})
 
 
@@ -301,16 +302,16 @@ def edit_scenario():
         return jsonify({'error': 'Empty request'})
     elif not request.json['programs'] or not request.json['name_scenario'] or not request.json['id']:
         return jsonify({'error': 'Убедитесь, вы добавили программы и ввели название сценария'})
-    session = db_session.create_session()
+    #  session = db_session.create_session()
     id = int(request.json['id'])
     name_scenario = request.json['name_scenario']
     programs_add_scenario = request.json['programs']
     programs = get_programs(programs_add_scenario)
-    scenario = session.query(Scenario).filter(Scenario.id == id, Scenario.user == current_user).first()
+    scenario = db_session.query(Scenario).filter(Scenario.id == id, Scenario.user == current_user).first()
     if not scenario:
         return jsonify({'error': 'Not found scenario'})
 
-    all_scenarios = session.query(Scenario).filter(Scenario.user == current_user).all()
+    all_scenarios = db_session.query(Scenario).filter(Scenario.user == current_user).all()
 
     if check_scenario(name_scenario, all_scenarios) == "error":
         return jsonify({'error': 'Сценарий с таким именем уже существует'})
@@ -321,7 +322,7 @@ def edit_scenario():
 
     scenario.name_scenario = name_scenario
     scenario.programs = programs
-    session.commit()
+    db_session.commit()
     return jsonify({'success': 'OK'})
 
 
@@ -332,12 +333,12 @@ def get_all_programs_user():
         return jsonify({'error': 'Empty request'})
     elif not request.json['id_user_vk']:
         return jsonify({'error': 'user_not_found'})
-    session = db_session.create_session()
+    #  session = db_session.create_session()
     id_user_vk = request.json['id_user_vk']
-    user = session.query(User).filter(User.id_user_vk == id_user_vk).first()
+    user = db_session.query(User).filter(User.id_user_vk == id_user_vk).first()
     if not user:
         return jsonify({'error': 'user_not_found'})
-    programs = session.query(Program).filter(Program.user == user).all()
+    programs = db_session.query(Program).filter(Program.user == user).all()
     if not programs:
         return jsonify({'error': 'programs_not_found'})
     programs_list = get_names_programs(programs)
@@ -351,12 +352,12 @@ def get_all_scenarios_user():
         return jsonify({'error': 'Empty request'})
     elif not request.json['id_user_vk']:
         return jsonify({'error': 'user_not_found'})
-    session = db_session.create_session()
+    #  session = db_session.create_session()
     id_user_vk = request.json['id_user_vk']
-    user = session.query(User).filter(User.id_user_vk == id_user_vk).first()
+    user = db_session.query(User).filter(User.id_user_vk == id_user_vk).first()
     if not user:
         return jsonify({'error': 'user_not_found'})
-    scenarios = session.query(Scenario).filter(Scenario.user == user).all()
+    scenarios = db_session.query(Scenario).filter(Scenario.user == user).all()
     if not scenarios:
         return jsonify({'error': 'scenarios_not_found'})
     scenarios_list = get_names_programs(scenarios)
@@ -382,8 +383,8 @@ def get_names_programs(programs):
 # Возвращает сами программы
 def get_programs(programs_add_scenario, return_list=False):
     list_programs = []
-    session = db_session.create_session()
-    programs_user = session.query(Program).filter(Program.user_id == current_user.id).all()
+    #  session = db_session.create_session()
+    programs_user = db_session.query(Program).filter(Program.user_id == current_user.id).all()
     for program in programs_user:
         for program_add in programs_add_scenario:
             if program.name_program == program_add:

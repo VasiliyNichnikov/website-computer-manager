@@ -1,13 +1,7 @@
 from pyperclip import copy
 from flask import Flask, render_template, redirect, request, abort
 #  from data_db import db_session
-# -------------------------
 from data_db.db_test_session import db_session, init_db
-
-
-# ------------------------
-
-
 from api import blueprint
 from data_db.users import User
 from data_db.programs import Program
@@ -55,9 +49,9 @@ def logout():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        session = db_session
         #  session = db_session.create_session()
-        user = session.query(User).filter(User.email == form.email.data).first()
+        #  user = session.query(User).filter(User.email == form.email.data).first()
+        user = db_session.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect('/')
@@ -72,8 +66,8 @@ def registration():
     if form.validate_on_submit():
         if form.password.data != form.password_repeat.data:
             return render_template('registration.html', form=form, message="Пароли не совпадают")
-        session = db_session.create_session()
-        if session.query(User).filter(User.email == form.email.data).first():
+        #  session = db_session.create_session()
+        if db_session.query(User).filter(User.email == form.email.data).first():
             return render_template('registration.html', form=form, message="Такой пользователь уже есть")
 
         function_add = Function(
@@ -89,8 +83,8 @@ def registration():
 
         user.set_password(form.password.data)
         user.functions.append(function_add)
-        session.add(user)
-        session.commit()
+        db_session.add(user)
+        db_session.commit()
         return redirect('/login')
     return render_template('registration.html', form=form)
 
@@ -99,8 +93,8 @@ def registration():
 @app.route('/information')
 @login_required
 def information():
-    session = db_session.create_session()
-    user = session.query(User).filter(User.email == current_user.email).first()
+    #  session = db_session.create_session()
+    user = db_session.query(User).filter(User.email == current_user.email).first()
     key_user = user.key_user
     return render_template('information.html', key_user=key_user)
 
@@ -111,8 +105,8 @@ def information():
 def program():
     form = ProgramForm()
     #  session = db_session.create_session()
-    session = db_session
-    all_programs = session.query(Program).filter(Program.user_id == current_user.id).all()
+    #  session = db_session
+    all_programs = db_session.query(Program).filter(Program.user_id == current_user.id).all()
     return render_template('programs.html', form=form, all_programs=all_programs)
 
 
@@ -122,10 +116,10 @@ def program():
 def add_program():
     form = ProgramForm()
     if form.validate_on_submit():
-        session = db_session.create_session()
-        user = session.query(User).filter(User.email == current_user.email).first()
-        if session.query(Program).filter(Program.user == current_user, Program.name_program == form.name_program.data)\
-                .first() or session.query(Program).filter(Program.user == current_user,
+        #  session = db_session.create_session()
+        user = db_session.query(User).filter(User.email == current_user.email).first()
+        if db_session.query(Program).filter(Program.user == current_user, Program.name_program == form.name_program.data)\
+                .first() or db_session.query(Program).filter(Program.user == current_user,
                                                           Program.path_program == form.path_program.data).first():
             return render_template('programs.html', form=form, condition="add", message="Ошибка имени или пути")
         new_program = Program(
@@ -133,8 +127,8 @@ def add_program():
             path_program=form.path_program.data
         )
         user.programs.append(new_program)
-        session.commit()
-        all_programs = session.query(Program).filter(Program.user_id == current_user.id).all()
+        db_session.commit()
+        all_programs = db_session.query(Program).filter(Program.user_id == current_user.id).all()
         return render_template('programs.html', all_programs=all_programs)
     # session = db_session.create_session()
     return render_template('programs.html', form=form, condition="add")
@@ -146,8 +140,8 @@ def add_program():
 def edit_program(id):
     form = ProgramForm()
     if request.method == "GET":
-        session = db_session.create_session()
-        program = session.query(Program).filter(Program.id == id, Program.user == current_user).first()
+        #  session = db_session.create_session()
+        program = db_session.query(Program).filter(Program.id == id, Program.user == current_user).first()
 
         if program:
             form.name_program.data = program.name_program
@@ -155,12 +149,12 @@ def edit_program(id):
         else:
             abort(404)
     if form.validate_on_submit():
-        session = db_session.create_session()
-        program = session.query(Program).filter(Program.id == id, Program.user == current_user).first()
+        #  session = db_session.create_session()
+        program = db_session.query(Program).filter(Program.id == id, Program.user == current_user).first()
         if program:
             program.name_program = form.name_program.data
             program.path_program = form.path_program.data
-            session.commit()
+            db_session.commit()
             return redirect('/programs')
         else:
             abort(404)
@@ -171,40 +165,40 @@ def edit_program(id):
 @app.route('/programs/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_program(id):
-    session = db_session.create_session()
-    program = session.query(Program).filter(Program.id == id, Program.user == current_user).first()
+    #  session = db_session.create_session()
+    program = db_session.query(Program).filter(Program.id == id, Program.user == current_user).first()
     if program:
-        session.delete(program)
-        session.commit()
+        db_session.delete(program)
+        db_session.commit()
     else:
         abort(404)
     return redirect('/programs')
 
 
 # Копирование пути
-@app.route('/programs/copy_path/<int:id>', methods=['GET', 'POST'])
-@login_required
-def copy_path_program(id):
-    session = db_session.create_session()
-    program = session.query(Program).filter(Program.id == id, Program.user == current_user).first()
-    if program:
-        copy(str(program.path_program))
-    else:
-        abort(404)
-    return redirect('/programs')
+# @app.route('/programs/copy_path/<int:id>', methods=['GET', 'POST'])
+# @login_required
+# def copy_path_program(id):
+#     #  session = db_session.create_session()
+#     program = db_session.query(Program).filter(Program.id == id, Program.user == current_user).first()
+#     if program:
+#         copy(str(program.path_program))
+#     else:
+#         abort(404)
+#     return redirect('/programs')
 
 
 # Копирование ключа
-@app.route('/information/copy_key', methods=['GET', 'POST'])
-@login_required
-def copy_key_user():
-    session = db_session.create_session()
-    user = session.query(User).get(current_user.id)
-    if user:
-        copy(str(user.key_user))
-    else:
-        abort(404)
-    return redirect('/information')
+# @app.route('/information/copy_key', methods=['GET', 'POST'])
+# @login_required
+# def copy_key_user():
+#     session = db_session.create_session()
+#     user = session.query(User).get(current_user.id)
+#     if user:
+#         copy(str(user.key_user))
+#     else:
+#         abort(404)
+#     return redirect('/information')
 
 
 # Сценарии, которые создает пользователь
@@ -213,7 +207,7 @@ def copy_key_user():
 def scenarios():
     form = ScenarioForm()
     res_scenarios_list = get_scenarios()
-    print(res_scenarios_list)
+    #  print(res_scenarios_list)
     return render_template('scenarios.html', form=form, all_scenarios=res_scenarios_list)
 
 
@@ -234,26 +228,26 @@ def edit_scenarios(id):
     programs = res_scenario['programs']
 
     if request.method == "GET":
-        session = db_session.create_session()
-        scenario = session.query(Scenario).filter(Scenario.id == id, Scenario.user == current_user).first()
-        all_programs = session.query(Program).filter(Program.user == current_user).all()
+        #  session = db_session.create_session()
+        scenario = db_session.query(Scenario).filter(Scenario.id == id, Scenario.user == current_user).first()
+        #  all_programs = db_session.query(Program).filter(Program.user == current_user).all()
         if scenario:
             form.name_scenario.data = scenario.name_scenario
         else:
             abort(404)
 
     if form.validate_on_submit():
-        session = db_session.create_session()
-        program = session.query(Program).filter(Program.id == id, Program.user == current_user).first()
+        #  session = db_session.create_session()
+        program = db_session.query(Program).filter(Program.id == id, Program.user == current_user).first()
         if program:
             program.name_program = form.name_program.data
             program.path_program = form.path_program.data
-            session.commit()
+            db_session.commit()
             return redirect('/programs')
         else:
             abort(404)
-    session = db_session.create_session()
-    all_programs = session.query(Program).filter(Program.user == current_user).all()
+    #  session = db_session.create_session()
+    all_programs = db_session.query(Program).filter(Program.user == current_user).all()
     return render_template('scenarios.html', form=form, condition="edit", programs=programs, all_programs=all_programs, id=id)
 
 
@@ -261,11 +255,11 @@ def edit_scenarios(id):
 @app.route('/scenarios/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_scenarios(id):
-    session = db_session.create_session()
-    scenario = session.query(Scenario).filter(Scenario.id == id, Scenario.user == current_user).first()
+    #  session = db_session.create_session()
+    scenario = db_session.query(Scenario).filter(Scenario.id == id, Scenario.user == current_user).first()
     if scenario:
-        session.delete(scenario)
-        session.commit()
+        db_session.delete(scenario)
+        db_session.commit()
     else:
         abort(404)
     return redirect('/scenarios')
@@ -273,9 +267,9 @@ def delete_scenarios(id):
 
 # Возвращает всю информацию о сценариях
 def get_scenarios():
-    session = db_session.create_session()
-    all_programs = session.query(Program).filter(Program.user_id == current_user.id).all()
-    all_scenarios = session.query(Scenario).filter(Scenario.user_id == current_user.id).all()
+    #  session = db_session.create_session()
+    all_programs = db_session.query(Program).filter(Program.user_id == current_user.id).all()
+    all_scenarios = db_session.query(Scenario).filter(Scenario.user_id == current_user.id).all()
     res_scenarios_list = []
     for scenario in all_scenarios:
         list_programs = scenario.programs.split()
@@ -293,8 +287,8 @@ def get_scenarios():
 
 # Возвращает сценарий по id
 def get_scenario_id(id):
-    session = db_session.create_session()
-    scenario = session.query(Scenario).filter(Scenario.id == id, Scenario.user == current_user).first()
+    #  session = db_session.create_session()
+    scenario = db_session.query(Scenario).filter(Scenario.id == id, Scenario.user == current_user).first()
     res_scenarios_list = get_scenarios()
     for res_scenario in res_scenarios_list:
         if res_scenario['scenario'].id == scenario.id:
@@ -307,8 +301,8 @@ def get_scenario_id(id):
 def reminding():
     form = FunctionsForm()
     if request.method == 'GET':
-        session = db_session.create_session()
-        functions = session.query(Function).filter(Function.user == current_user).first()
+        #  session = db_session.create_session()
+        functions = db_session.query(Function).filter(Function.user == current_user).first()
 
         if functions:
             form.shut_down.data = functions.shut_down
@@ -318,18 +312,23 @@ def reminding():
         else:
             abort(404)
     if form.validate_on_submit():
-        session = db_session.create_session()
-        functions = session.query(Function).filter(Function.user == current_user).first()
+        #  session = db_session.create_session()
+        functions = db_session.query(Function).filter(Function.user == current_user).first()
 
         if functions:
             functions.shut_down = form.shut_down.data
             functions.reboot = form.reboot.data
             functions.sleep_mode = form.sleep_mode.data
-            session.commit()
+            db_session.commit()
             return redirect('/operating_system')
         else:
             abort(404)
     return render_template('operating_system.html', form=form)
+
+
+@app.teardown_request
+def shutdown_session(exception=None):
+    db_session.remove()
 
 
 if __name__ == '__main__':
