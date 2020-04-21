@@ -1,6 +1,13 @@
 from pyperclip import copy
 from flask import Flask, render_template, redirect, request, abort
-from data_db import db_session
+#  from data_db import db_session
+# -------------------------
+from data_db.db_test_session import db_session, init_db
+
+
+# ------------------------
+
+
 from api import blueprint
 from data_db.users import User
 from data_db.programs import Program
@@ -24,7 +31,8 @@ login_manager.init_app(app)
 # Загрузка игрока для входа
 @login_manager.user_loader
 def load_user(user_id):
-    session = db_session.create_session()
+    session = db_session
+    #  session = db_session.create_session()
     return session.query(User).get(user_id)
 
 
@@ -47,7 +55,8 @@ def logout():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        session = db_session.create_session()
+        session = db_session
+        #  session = db_session.create_session()
         user = session.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
@@ -101,7 +110,8 @@ def information():
 @login_required
 def program():
     form = ProgramForm()
-    session = db_session.create_session()
+    #  session = db_session.create_session()
+    session = db_session
     all_programs = session.query(Program).filter(Program.user_id == current_user.id).all()
     return render_template('programs.html', form=form, all_programs=all_programs)
 
@@ -323,6 +333,7 @@ def reminding():
 
 
 if __name__ == '__main__':
-    db_session.global_init()
+    #  db_session.global_init()
+    init_db()
     app.register_blueprint(blueprint)
-    app.run()
+    app.run(port=5001)
