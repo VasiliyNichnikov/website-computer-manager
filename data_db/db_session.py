@@ -1,4 +1,3 @@
-import psycopg2
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
 from sqlalchemy.orm import Session
@@ -22,7 +21,8 @@ def global_init():
     #  conn_str = f'sqlite:///{db_file.strip()}?check_same_thread=False'
     print(f"Подключение к базе данных по адресу {conn_str}")
 
-    engine = sa.create_engine(conn_str, echo=False)
+    #  engine = sa.create_engine(conn_str, echo=False)
+    engine = sa.create_engine(conn_str, convert_unicode=True)
     __factory = orm.sessionmaker(bind=engine)
 
     from . import __all_models
@@ -32,5 +32,4 @@ def global_init():
 
 def create_session() -> Session:
     global __factory
-    print(__factory())
     return __factory()
