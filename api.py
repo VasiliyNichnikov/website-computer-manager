@@ -137,6 +137,7 @@ def change_name_scenario():
     db_session.commit()
     return jsonify({'success': 'name_scenario_change_success'})
 
+
 # Данный метод меняет функцию (Выключить, перезагрузить или включить спящий режим на ПК)
 @blueprint.route('/change_pc_function', methods=['POST', 'GET'])
 def change_pc_function():
@@ -200,7 +201,6 @@ def get_all_functions_client():
     user.select_pc_function = None
     db_session.commit()
     return jsonify({'path_program_select': path_program_select, 'scenario_select': get_list_programs(scenario, all_programs), 'select_pc_function': select_pc_function})
-
 
 
 # Данный метод возвращает список путей к программам

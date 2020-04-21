@@ -20,6 +20,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'v!hT49JOc,Nob_Hp5urgx.D8Adfy1zS6n?YBPCsM'
 login_manager = LoginManager()
 login_manager.init_app(app)
+app.register_blueprint(blueprint)
 
 
 # Загрузка игрока для входа
@@ -334,5 +335,4 @@ def shutdown_session(exception=None):
 if __name__ == '__main__':
     #  db_session.global_init()
     init_db()
-    app.register_blueprint(blueprint, url_prefix='/')
     app.run(port=5001)
