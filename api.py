@@ -8,7 +8,7 @@ from data_db.scenarios import Scenario
 from data_db.operating_system import Function
 
 
-blueprint = flask.Blueprint('api', __name__, template_folder="template")
+blueprint = flask.Blueprint('api', __name__, template_folder="templates")
 
 
 # Данный метод добавляет ключ приложения в БД
@@ -377,6 +377,7 @@ def get_names_programs(programs):
     for i in programs:
         names_list.append(i.name_program)
     return names_list
+
 
 # Возвращает сами программы
 def get_programs(programs_add_scenario, return_list=False):
