@@ -334,5 +334,5 @@ def shutdown_session(exception=None):
 if __name__ == '__main__':
     #  db_session.global_init()
     init_db()
-    app.register_blueprint(blueprint)
+    app.register_blueprint(blueprint, url_prefix='/')
     app.run(port=5001)
