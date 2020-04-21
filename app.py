@@ -14,6 +14,7 @@ from forms.scenario import ScenarioForm
 from forms.functions import FunctionsForm
 from forms.program import ProgramForm
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'v!hT49JOc,Nob_Hp5urgx.D8Adfy1zS6n?YBPCsM'
 login_manager = LoginManager()
@@ -324,4 +325,4 @@ def reminding():
 if __name__ == '__main__':
     db_session.global_init()
     app.register_blueprint(blueprint)
-    app.run()
+    app.run(port=5001)

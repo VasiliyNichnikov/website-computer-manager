@@ -32,4 +32,5 @@ def global_init():
 
 def create_session() -> Session:
     global __factory
+    print(__factory())
     return __factory()
