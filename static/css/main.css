@@ -1,0 +1,77 @@
+.block-add-program
+{
+    background: #FAF5DE;
+    height: 120px;
+    padding: 10px;
+}
+
+.block-add-program-scenario
+{
+    background: #FAF5DE;
+    width: 80%;
+    height: 120px;
+    transform: translate(25%, 0);
+}
+
+.block-information
+{
+    background: #FAF5DE;
+    transform: translate(0, 0);
+}
+
+.button-right-program
+{
+    position:absolute;
+    right: 50px;
+}
+
+.parent
+{
+    position: relative;
+}
+
+.children-center-vertical
+{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.setting-width-input
+{
+    width: 25%;
+}
+
+.more-details
+{
+    display: none;
+    list-style-type: none;
+    margin: 10px;
+    overflow: hidden;
+}
+
+/*Не удалять*/
+.btn-more-details {}
+
+.copy-line
+{
+    background: none;
+    border: none;
+    width: 70%;
+    font-weight: bold;
+}
+
+.children-center-horizontal
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40%;
+    margin: 0 0 0 0;
+    transform: translate(-40%, -50%);
+}
+
+.parent-block-scenario{}
+.button-delete-block-program{}
+.program_info{}
