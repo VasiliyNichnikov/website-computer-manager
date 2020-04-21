@@ -1,9 +1,10 @@
 import sqlalchemy
 from sqlalchemy import orm
-from .db_session import SqlAlchemyBase
+from .db_test_session import Base
+#  from .db_session import SqlAlchemyBase
 
 
-class Function(SqlAlchemyBase):
+class Function(Base):
     __tablename__ = 'functions'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
