@@ -324,5 +324,4 @@ def reminding():
 if __name__ == '__main__':
     db_session.global_init()
     app.register_blueprint(blueprint)
-    app.register_blueprint(blueprint)
     app.run()
