@@ -1,0 +1,71 @@
+{% extends "panel.html" %}
+
+<!-- html, которая показывает информацию, ключ и тд -->
+{% block content %}
+    <h1>Информация</h1>
+    <div class="row pt-3">
+            <div class="col">
+                <div class="block-add-program parent">
+                    <h6 style="padding-left: 20px;">Ключ для активации программы</h6>
+                    <b><p style="padding-left: 50px;" class="children-center-vertical">
+                        Ключ
+                    </p></b>
+                    <b><p class="children-center-horizontal js-keylink">
+                        <a class="js-keylink">{{ key_user }}</a>
+                    </p></b>
+                    <div class="button-right-program children-center-vertical">
+                        <button onclick="copy_clipboard()" class="js-keycopybtn btn btn-light">Копировать ключ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row pt-3">
+            <div class="col">
+                <div class="block-information parent">
+                    <h6 style="padding-left: 20px;">Данный ключ нужно ввести в программу на компьютере, а так же у бота в вконтакте</h6>
+                    
+                    <b><p style="padding-left: 50px;">
+                        Активация программы
+                    </p></b>
+
+                    <img class="" style="padding-left: 50px;" src="{{ url_for('static', filename='img/learning/program.png') }}" alt="">
+
+                    <div style="padding-left: 60px;">
+                        <P>
+                            Чтобы активировать программу, следуйте четырем простым шагам:
+                            <ul>
+                                <li>Установите программу.</li>
+                                <li>Скопируйте ключ с даннай странице.</li>
+                                <li>Вставьте ключ в поле "введите ключ" и нажмите "Войти".</li>
+                                <li>Если все сделано правильно, выведится сообщение об успешном входе.</li>
+                            </ul>
+                        </P>
+                    </div>
+
+                    <b><p style="padding-left: 50px;">
+                        Активация бота
+                    </p></b>
+                    
+                    <div style="padding-left: 60px;">
+                        <P>
+                            Чтобы активировать <a href="https://vk.com/cactusbot">бота</a>, напишите команду "/start" и следуйте его указаниям. 
+                        </P>
+                    </div>
+
+                    <img class="" style="padding-left: 50px;" src="{{ url_for('static', filename='img/learning/bot.png') }}" alt="">
+
+                    <!-- <b><p style="padding-left: 50px;" class="children-center-vertical">
+                        Ключ
+                    </p></b>
+                    <b><p class="children-center-horizontal js-keylink">
+                        <a class="js-keylink">{{ key_user }}</a>
+                    </p></b>
+                    <div class="button-right-program children-center-vertical">
+                        <button onclick="copy_clipboard()" class="js-keycopybtn btn btn-light">Копировать ключ</button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+{% endblock %}
