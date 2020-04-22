@@ -7,4 +7,5 @@ class RegistrationForm(FlaskForm):
     email = StringField("Email", validators=[Email()])
     password = PasswordField("Пароль", validators=[DataRequired()])
     password_repeat = PasswordField("Повторите пароль", validators=[DataRequired()])
+    read_privacy_policy = BooleanField('Я прочитал (-а) и принимааю', validators=[DataRequired()])
     submit = SubmitField("Зарегистрироваться")

@@ -37,6 +37,12 @@ def main():
     return render_template('main.html')
 
 
+# Политики Конфиденциальности
+@app.route('/police')
+def privacy_policy():
+    return render_template('police.html')
+
+
 # Выход из аккаунта
 @app.route('/logout')
 @login_required

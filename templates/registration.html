@@ -38,6 +38,7 @@
                 {% endfor %}
             </p>
 
+            <p>{{ form.read_privacy_policy() }} {{ form.read_privacy_policy.label() }} <a href="/police">условия использования</a></p>
             <p>{{ form.submit(type="submit", class="btn btn-primary col-9") }} </p>
             {{message}}
         </form>
