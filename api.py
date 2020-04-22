@@ -282,7 +282,7 @@ def create_new_scenario():
     )
     all_scenarios = db_session.query(Scenario).filter(Scenario.user == current_user).all()
 
-    if check_scenario(name_scenario, all_scenarios) == "error":
+    if check_scenario(name_scenario, scenario, all_scenarios) == "error":
         return jsonify({'error': 'Сценарий с таким именем уже существует'})
     if check_programs(programs_add_scenario) == "error_duplication":
         return jsonify({'error': 'Убедитесь, что программы не повторяются'})
@@ -313,7 +313,7 @@ def edit_scenario():
 
     all_scenarios = db_session.query(Scenario).filter(Scenario.user == current_user).all()
 
-    if check_scenario(name_scenario, all_scenarios) == "error":
+    if check_scenario(name_scenario, scenario, all_scenarios) == "error":
         return jsonify({'error': 'Сценарий с таким именем уже существует'})
     if check_programs(programs_add_scenario) == "error_duplication":
         return jsonify({'error': 'Убедитесь, что программы не повторяются'})
@@ -368,7 +368,7 @@ def get_all_scenarios_user():
 def get_names_scenarios(scenarios):
     names_list = []
     for i in scenarios:
-        names_list.append(i.name_program)
+        names_list.append(i.name_scenario)
     return names_list
 
 
@@ -395,9 +395,9 @@ def get_programs(programs_add_scenario, return_list=False):
 
 
 # Проверяет, можно ли добавлять сценарий (Проверка имени сценария)
-def check_scenario(name_scenario, all_scenarios):
+def check_scenario(new_name_scenario, scenario, all_scenarios):
     for i in all_scenarios:
-        if name_scenario == i.name_scenario:
+        if new_name_scenario == i.name_scenario and scenario.id != i.id:
             return "error"
     return "success"
 

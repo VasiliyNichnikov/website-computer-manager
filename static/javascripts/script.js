@@ -54,12 +54,17 @@ function delete_program_scenario() {
     var elem = document.querySelector('.button-delete-block-program');
     var parents = document.querySelectorAll('.parent-block-scenario');
 
+    let array_parents = [];
+
     for (var i = 0; i < parents.length; i++) {
         var parent = parents[i];
         if (parent.contains(elem)) {
+            //array_parents.unshift(parent);
             parent.remove();
         }
     }
+    //print(array_parents);
+    //array_parents[0].remove();
 }
 
 
