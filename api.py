@@ -360,7 +360,7 @@ def get_all_scenarios_user():
     scenarios = db_session.query(Scenario).filter(Scenario.user == user).all()
     if not scenarios:
         return jsonify({'error': 'scenarios_not_found'})
-    scenarios_list = get_names_programs(scenarios)
+    scenarios_list = get_names_scenarios(scenarios)
     return jsonify({'success': scenarios_list})
 
 
