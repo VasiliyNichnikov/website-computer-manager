@@ -129,8 +129,7 @@ def add_program():
                                    message="Программа с таким именем уже есть")
         user.programs.append(new_program)
         db_session.commit()
-
-        return render_template('programs.html', all_programs=all_programs)
+        return redirect('/programs')
     # session = db_session.create_session()
     return render_template('programs.html', form=form, condition="add")
 
