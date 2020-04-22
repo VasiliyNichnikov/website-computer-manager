@@ -119,17 +119,17 @@ def add_program():
     if form.validate_on_submit():
         #  session = db_session.create_session()
         user = db_session.query(User).filter(User.email == current_user.email).first()
-        if db_session.query(Program).filter(Program.user == current_user, Program.name_program == form.name_program.data)\
-                .first() or db_session.query(Program).filter(Program.user == current_user,
-                                                          Program.path_program == form.path_program.data).first():
-            return render_template('programs.html', form=form, condition="add", message="Ошибка имени или пути")
         new_program = Program(
             name_program=form.name_program.data,
             path_program=form.path_program.data
         )
+        all_programs = db_session.query(Program).filter(Program.user_id == current_user.id).all()
+        if check_name_progam(form.name_program.data, new_program, all_programs):
+            return render_template('programs.html', form=form, condition="add",
+                                   message="Программа с таким именем уже есть")
         user.programs.append(new_program)
         db_session.commit()
-        all_programs = db_session.query(Program).filter(Program.user_id == current_user.id).all()
+
         return render_template('programs.html', all_programs=all_programs)
     # session = db_session.create_session()
     return render_template('programs.html', form=form, condition="add")
@@ -153,6 +153,11 @@ def edit_program(id):
         #  session = db_session.create_session()
         program = db_session.query(Program).filter(Program.id == id, Program.user == current_user).first()
         if program:
+            all_programs = db_session.query(Program).filter(Program.user_id == current_user.id).all()
+            if check_name_progam(form.name_program.data, program, all_programs):
+                return render_template('programs.html', form=form, condition="edit",
+                                       message="Программа с таким именем уже есть")
+
             program.name_program = form.name_program.data
             program.path_program = form.path_program.data
             db_session.commit()
@@ -160,6 +165,14 @@ def edit_program(id):
         else:
             abort(404)
     return render_template('programs.html', form=form, condition="edit")
+
+
+# Данный метод проверяет, есть ли такая программа или нет
+def check_name_progam(name_program_new, program, all_programs):
+    for i in all_programs:
+        if name_program_new == i.name_program and program.id != i.id:
+            return True
+    return False
 
 
 # Удаление программы
