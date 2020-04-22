@@ -217,23 +217,23 @@ def get_list_programs(scenario, all_programs):
 
 
 # Данный метод получает информацию о программе, которую надо запустить на ПК
-@blueprint.route('/get_start_program', methods=['POST'])
-def get_start_program():
-    if not request.json:
-        return jsonify({'error': 'Empty request'})
-    elif not request.json['key_user']:
-        return jsonify({'error': 'Not key_user'})
-    #  session = db_session.create_session()
-    key_user = request.json['key_user']
-    user = db_session.query(User).filter(User.key_user == key_user).first()
-    path_program_select = user.path_program_select
-    user.path_program_select = ""
-    db_session.commit()
-    return jsonify({'path_program': [path_program_select]})
+# @blueprint.route('/get_start_program', methods=['POST'])
+# def get_start_program():
+#     if not request.json:
+#         return jsonify({'error': 'Empty request'})
+#     elif not request.json['key_user']:
+#         return jsonify({'error': 'Not key_user'})
+#     #  session = db_session.create_session()
+#     key_user = request.json['key_user']
+#     user = db_session.query(User).filter(User.key_user == key_user).first()
+#     path_program_select = user.path_program_select
+#     user.path_program_select = ""
+#     db_session.commit()
+#     return jsonify({'path_program': [path_program_select]})
 
 
 # Проверка пользователя, есть ли у него ключ или нет
-@blueprint.route('/check_key_user', methods=['POST'])
+@blueprint.route('/check_key_user', methods=['GET', 'POST'])
 def check_key_user():
     if not request.json:
         return jsonify({'error': 'Empty request'})
@@ -249,7 +249,7 @@ def check_key_user():
 
 
 # Данный метод возвращает программы, которые есть у пользователя на сайте
-@blueprint.route('/get_programs_for_scenarios', methods=['GET'])
+@blueprint.route('/get_programs_for_scenarios', methods=['GET', 'POST'])
 def get_programs_for_scenarios():
     #  session = db_session.create_session()
     user = db_session.query(User).get(current_user.id)
