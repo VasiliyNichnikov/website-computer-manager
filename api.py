@@ -58,7 +58,7 @@ def add_key_bot():
     elif not request.json['key_user'] or not request.json['id_user_vk']:
         return jsonify({'error': 'Not key_user'})
     key_user = request.json['key_user']
-    id_user_vk = request.json['id_user_vk']
+    id_user_vk = str(request.json['id_user_vk'])
     #  session = db_session.create_session()
     user = db_session.query(User).filter(User.key_user == key_user).first()
     if not user:
@@ -239,7 +239,7 @@ def check_key_user():
         return jsonify({'error': 'Empty request'})
     elif not request.json['id_user_vk']:
         return jsonify({'error': 'Not id_user_vk'})
-    id_user_vk = request.json['id_user_vk']
+    id_user_vk = str(request.json['id_user_vk'])
     #  session = db_session.create_session()
     user = db_session.query(User).filter(User.id_user_vk == id_user_vk).first()
     if not user:
@@ -334,7 +334,7 @@ def get_all_programs_user():
     elif not request.json['id_user_vk']:
         return jsonify({'error': 'user_not_found'})
     #  session = db_session.create_session()
-    id_user_vk = request.json['id_user_vk']
+    id_user_vk = str(request.json['id_user_vk'])
     user = db_session.query(User).filter(User.id_user_vk == id_user_vk).first()
     if not user:
         return jsonify({'error': 'user_not_found'})
@@ -353,7 +353,7 @@ def get_all_scenarios_user():
     elif not request.json['id_user_vk']:
         return jsonify({'error': 'user_not_found'})
     #  session = db_session.create_session()
-    id_user_vk = request.json['id_user_vk']
+    id_user_vk = str(request.json['id_user_vk'])
     user = db_session.query(User).filter(User.id_user_vk == id_user_vk).first()
     if not user:
         return jsonify({'error': 'user_not_found'})
