@@ -102,7 +102,7 @@ function add_program_scenario() {
     // Создание блока
     var container = document.getElementById("add_program_scenario");
 
-    var count_children = container.childNodes.length;
+    //var count_children = container.childNodes.length;
 
     var main_div = document.createElement("div");
     main_div.className = "row pt-3 parent-block-scenario";
@@ -114,8 +114,8 @@ function add_program_scenario() {
     var program_div = document.createElement("div");
     program_div.className = "block-add-program-scenario parent";
 
-    var board_programs = document.createElement("div");
-    board_programs.className = "button-right-program children-center-vertical";
+    var form_programs = document.createElement("form");
+    form_programs.className = "button-right-program children-center-vertical";
 
     var button_delete = document.createElement("button");
     button_delete.type = "button";
@@ -123,15 +123,17 @@ function add_program_scenario() {
     button_delete.setAttribute("onclick", "delete_program_scenario()");
     button_delete.textContent = "Удалить";
 
-    var str = '<input type="search" class="program_info" list="character">';
+    //var str = '<input type="search" class="program_info" list="character">';
 
-    var datalist_programs = document.createElement("datalist");
-    datalist_programs.id = "character";
+    var selects_programs = document.createElement("select");
+    selects_programs.id = "programs";
+    selects_programs.className = "program_info";
+    selects_programs.style = "margin-right: 10px;";
 
     for(var i = 0; i < array_programs.length; i++){
         var option = document.createElement("option");
-        option.value = array_programs[i];
-        datalist_programs.appendChild(option);
+        option.innerHTML = array_programs[i];
+        selects_programs.appendChild(option);
     }
 
     var title_program = document.createElement("h6");
@@ -139,12 +141,12 @@ function add_program_scenario() {
     title_program.style = "padding-left: 20px;";
     title_program.innerHTML = "Добавление прогаммы";
 
-    board_programs.innerHTML = str;
-    board_programs.appendChild(datalist_programs);
-    board_programs.appendChild(button_delete);
+    //board_programs.innerHTML = str;
+    form_programs.appendChild(selects_programs);
+    form_programs.appendChild(button_delete);
 
     program_div.appendChild(title_program);
-    program_div.appendChild(board_programs);
+    program_div.appendChild(form_programs);
 
     col_div.appendChild(program_div);
     main_div.appendChild(col_div);

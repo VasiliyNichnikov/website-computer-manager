@@ -9,6 +9,7 @@ from data_db.scenarios import Scenario
 from data_db.operating_system import Function
 
 
+character_valid = "qwertyuiopasdfghjklzxcvbnm1234567890-."
 blueprint = flask.Blueprint('api', __name__, template_folder="templates")
 
 
@@ -275,13 +276,13 @@ def create_new_scenario():
     name_scenario = request.json['name_scenario']
     #  session = db_session.create_session()
     programs = get_programs(programs_add_scenario)
-
     scenario = Scenario(
         name_scenario=name_scenario,
         programs=programs
     )
     all_scenarios = db_session.query(Scenario).filter(Scenario.user == current_user).all()
-
+    if check_character_valid(name_scenario) is False:
+        return jsonify({'error': 'Недопустимые символы в названии сценария'})
     if check_scenario(name_scenario, scenario, all_scenarios) == "error":
         return jsonify({'error': 'Сценарий с таким именем уже существует'})
     if check_programs(programs_add_scenario) == "error_duplication":
@@ -306,6 +307,7 @@ def edit_scenario():
     id = int(request.json['id'])
     name_scenario = request.json['name_scenario']
     programs_add_scenario = request.json['programs']
+    print("programs - ", programs_add_scenario)
     programs = get_programs(programs_add_scenario)
     scenario = db_session.query(Scenario).filter(Scenario.id == id, Scenario.user == current_user).first()
     if not scenario:
@@ -313,6 +315,8 @@ def edit_scenario():
 
     all_scenarios = db_session.query(Scenario).filter(Scenario.user == current_user).all()
 
+    if check_character_valid(name_scenario) is False:
+        return jsonify({'error': 'Недопустимые символы в названии сценария'})
     if check_scenario(name_scenario, scenario, all_scenarios) == "error":
         return jsonify({'error': 'Сценарий с таким именем уже существует'})
     if check_programs(programs_add_scenario) == "error_duplication":
@@ -362,6 +366,14 @@ def get_all_scenarios_user():
         return jsonify({'error': 'scenarios_not_found'})
     scenarios_list = get_names_scenarios(scenarios)
     return jsonify({'success': scenarios_list})
+
+
+# Проверяем, чтобы имена программ и сценариев было на английском
+def check_character_valid(characters):
+    for i in characters.lower():
+        if i not in character_valid:
+            return False
+    return True
 
 
 # Возвращает имена всех сценарий, которые есть у пользователя

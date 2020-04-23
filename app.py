@@ -16,6 +16,7 @@ from forms.functions import FunctionsForm
 from forms.program import ProgramForm
 
 
+character_valid = "qwertyuiopasdfghjklzxcvbnm1234567890-."
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'v!hT49JOc,Nob_Hp5urgx.D8Adfy1zS6n?YBPCsM'
 login_manager = LoginManager()
@@ -130,6 +131,9 @@ def add_program():
             path_program=form.path_program.data
         )
         all_programs = db_session.query(Program).filter(Program.user_id == current_user.id).all()
+        if check_character_valid(form.name_program.data) is False:
+            return render_template('programs.html', form=form, condition="edit",
+                                   message="Недопустимые символы в названии программы")
         if check_name_progam(form.name_program.data, new_program, all_programs):
             return render_template('programs.html', form=form, condition="add",
                                    message="Программа с таким именем уже есть")
@@ -159,6 +163,10 @@ def edit_program(id):
         program = db_session.query(Program).filter(Program.id == id, Program.user == current_user).first()
         if program:
             all_programs = db_session.query(Program).filter(Program.user_id == current_user.id).all()
+            if check_character_valid(form.name_program.data) is False:
+                return render_template('programs.html', form=form, condition="edit",
+                                       message="Недопустимые символы в названии программы")
+
             if check_name_progam(form.name_program.data, program, all_programs):
                 return render_template('programs.html', form=form, condition="edit",
                                        message="Программа с таким именем уже есть")
@@ -193,6 +201,13 @@ def delete_program(id):
         abort(404)
     return redirect('/programs')
 
+
+# Проверяем, чтобы имена программ и сценариев было на английском
+def check_character_valid(characters):
+    for i in characters.lower():
+        if i not in character_valid:
+            return False
+    return True
 
 # Копирование пути
 # @app.route('/programs/copy_path/<int:id>', methods=['GET', 'POST'])

@@ -47,15 +47,18 @@
                             <div class="col">
                                 <div class="block-add-program-scenario parent">
                                     <h6 class="children-center-vertical" style="padding-left: 20px;">Изменение программы</h6>
-                                    <div class="button-right-program children-center-vertical">
-                                        <input type="search" class="program_info" list="character" value={{program.name_program}}>
-                                        <datalist id="character">
-                                            {% for program_user in all_programs %}
-                                                <option value={{program_user.name_program}}></option>
-                                            {% endfor %}
-                                        </datalist>
-                                        <button type="button" class="button-delete-block-program btn btn-danger" onclick="delete_program_scenario()">Удалить</button>
-                                    </div>
+                                        <form class="button-right-program children-center-vertical">
+                                            <select id="programs" class="program_info" style="margin-right: 10px;">
+                                                {% for program_user in all_programs %}
+                                                    {% if program.name_program == program_user.name_program %}
+                                                        <option selected>{{program_user.name_program}}</option>
+                                                    {% else %}
+                                                        <option>{{program_user.name_program}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            <button type="button" class="button-delete-block-program btn btn-danger" onclick="delete_program_scenario()">Удалить</button>
+                                        </form>
                                 </div>
                             </div>
                         </div>
